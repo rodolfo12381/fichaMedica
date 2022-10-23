@@ -22,3 +22,16 @@
   #nav-links svg {
     font-size: 1.5em;
   }
+
+  #nav-links a:hover {
+    color: #800080 ;
+  }
+  h2:hover {
+    color: #440344 ;
+  }
+  .btn-logout {
+    color: #e88cd2;
+  }
+  .btn-logout:hover{
+    color: #800080 ;
+  }
