@@ -2,7 +2,9 @@ import './MedicalRecord.css'
 import { useState,useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { register, reset } from "../../slices/authSlice";
+import { medicalRegister } from "../../slices/medicalSlice";
 import { useNavigate } from 'react-router-dom';
+import {BsFillPlusCircleFill,BsTrash,BsFillCheckCircleFill} from "react-icons/bs";
 
 const MedicalRecord = () => {
 
@@ -20,13 +22,23 @@ const MedicalRecord = () => {
             progress: "middle"
         },
         {
+            id: 'more_medical_data',
+            title: "Dados de Saúde",
+            progress: "middle2"
+        },
+        {
             id: 'convenio_data',
             title: "Dados de Convênio",
+            progress: "middle3"
+        },
+        {
+            id: 'medicamentos',
+            title: "Medicamentos",
             progress: "end"
         },
         {
-            id: 'register_end',
-            title: "Registro Finalizado!",
+            id: 'submit',
+            title: "Vacinas",
             progress: "submit"
         }
     ];
@@ -47,16 +59,68 @@ const MedicalRecord = () => {
 
     const [cardiaco, setCardiaco] = useState('');
     const [desmaioConvulsao, setDesmaioConvulsao] = useState('');
+    const [dataDesmaioConvulsao, setDataDesmaioConvulsao] = useState('');
     const [diabetico, setDiabetico] = useState('');
+    const [medicamentos, setMedicamentos] = useState([]);
+    const [vacinas, setVacinas] = useState([]);
+    const [doencas,setDoencas] = useState([])
+    const [tipoSanguineo, setTipoSanguineo] = useState('');
     const [internado, setInternado] = useState('');
+    const [internadoMotivo, setInternadoMotivo] = useState('');
     const [intoleranteLactose, setIntoleranteLactose] = useState('');
     const [transfusao, setTransfusao] = useState('');
+    const [dataTransfusao, setDataTransfusao] = useState('')
     const [cartaoSus, setCartaoSus] = useState('');
     const [numeroConvenio, setNumeroConvenio] = useState('');
     const [convenio, setConvenio] = useState('');
 
     const dispatch = useDispatch();
 
+    const addInputButton = (e) =>{
+        e.preventDefault()
+
+        setMedicamentos([...medicamentos,""])
+    }
+
+    const handleChangeMedicamento = (e,index) => {
+            medicamentos[index] = e.target.value
+            setMedicamentos([...medicamentos])
+    }
+
+    const handleRemoveInputMedicamentos = (position) =>{
+        setMedicamentos([...medicamentos.filter((_,index) => index != position)])
+    }
+
+    const addInputButtonDoencas = (e) =>{
+        e.preventDefault()
+
+        setDoencas([...doencas,""])
+    }
+
+    const handleChangeDoencas = (e,index) => {
+        doencas[index] = e.target.value
+        setDoencas([...doencas])
+    }
+
+    const handleRemoveInputDoencas = (position) =>{
+        setDoencas([...doencas.filter((_,index) => index != position)])
+    }
+
+    const addInputButtonVacinas = (e) =>{
+        e.preventDefault()
+
+        setVacinas([...vacinas,""])
+    }
+    const [form,setForm] = useState({})
+
+    const handleChangeVacinas = (index) => {
+        vacinas[index] = form
+        setVacinas([...vacinas])
+    }
+
+    const handleRemoveInputVacinas = (position) =>{
+        setVacinas([...vacinas.filter((_,index) => index != position)])
+    }
 
     const handleSubmit = (e) => {
 
@@ -65,27 +129,34 @@ const MedicalRecord = () => {
         const user= {
             primeiroNome: name,
             sobreNome: surName,
-            birthdate: birthdate,
+            dataNascimento: birthdate,
             email: email,
+            password: email
         }
 
-        dispatch(register(user));
+        // dispatch(register(user));
 
         const medicalData = {
             cardiaco: cardiaco,
-            desmaioConvulsao: desmaioConvulsao,
+            desmaioOuConvulsao: desmaioConvulsao,
+            dataDesmaioConvulsao: dataDesmaioConvulsao,
             diabetico: diabetico,
             internado: internado,
-            intoleranteLactose: intoleranteLactose,
+            intoleranciaLactose: intoleranteLactose,
             transfusao:transfusao,
+            dataTransfusao: dataTransfusao,
             cartaoSus: cartaoSus,
-            numeroConvenio: numeroConvenio,
-            convenio: convenio
+            numeroCarteirinha: numeroConvenio,
+            convenio: convenio,
+            medicamentos: medicamentos,
+            doencas:doencas,
+            tipoSanguineo: tipoSanguineo,
+            internadoMotivo: internadoMotivo,
+            dataDesmaioConvulsao:dataDesmaioConvulsao,
+            vacinas: vacinas
         }
-        
-        // dispatch(registerMedical(medicalData));
-        setCurrentStep((prevState) => prevState + 1);
-        navigate("/profile")
+        dispatch(medicalRegister(medicalData));
+        // navigate("/profile")
     }
 
     useEffect(() => {
@@ -93,7 +164,7 @@ const MedicalRecord = () => {
     }, [dispatch]);
 
     return (
-        <div className="ficha-medica">
+        <div className="ficha-medica mb-5">
             <h2>Ficha Médica do Paciente</h2>
             <div className="progress">
                 <div className="progress-bar" id={steps[currentStep].progress} role="progressbar" aria-valuenow={steps[currentStep].progress} aria-valuemin="0" aria-valuemax="100"></div>
@@ -164,6 +235,25 @@ const MedicalRecord = () => {
                     </div>
                     <div className='row mt-3'>
                         <div className='col-6'>
+                            <label className='form-label '>Tipo Sanguíneo:</label>
+                        </div>
+                        <div className='col-6'>
+                            <select className="form-select " aria-label="Default select example" onChange={(e)=> setTipoSanguineo(e.target.value)} value={tipoSanguineo}>
+                                <option value="">SELECIONE</option>
+                                <option value="A+">A+</option>
+                                <option value="B+">B+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O+">O+</option>
+                                <option value="A-">A-</option>
+                                <option value="B-">B-</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O-">O-</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div className='row mt-3'>
+                        <div className='col-6'>
                             <label className='form-label'>Desmaio ou Convulsão:</label>
                         </div>
                         <div className='col-6'>
@@ -174,6 +264,16 @@ const MedicalRecord = () => {
                             </select>
                         </div>
                     </div>
+                    {desmaioConvulsao  && 
+                        <div className='row mt-3'>
+                            <div className='col-6'>
+                                <label className='form-label'>Data do Ocorrido:</label>
+                            </div>
+                            <div className='col-6'>
+                                <input type="date" className='form-control' name='dataOcorrido' value={dataDesmaioConvulsao}  onChange={(e) => setDataDesmaioConvulsao(e.target.value)}/>
+                            </div>
+                        </div>
+                    }
                     <div className='row mt-3'>
                         <div className="col-6">
                             <label className='form-label'>Diabético:</label>
@@ -198,6 +298,18 @@ const MedicalRecord = () => {
                             </select>
                         </div>
                     </div>
+                    {internado == 'SIM' &&
+                        <div className='row mt-3'>
+                            <div className="col-6">
+                                <label className='form-label'>Motivo:</label>
+                            </div>
+                            <div className="col-6">
+                                <textarea name="motivo" cols="30" rows="7" placeholder='Informe o motivo da internação...'
+                                 onChange={(e)=> setInternadoMotivo(e.target.value)} value={internadoMotivo}>
+                                 </textarea>
+                            </div>
+                        </div>
+                     }
                     <div className='row mt-3'>
                         <div className="col-6">
                             <label className='form-label'>Intorelante à Lactose:</label>
@@ -221,6 +333,41 @@ const MedicalRecord = () => {
                             </select>
                         </div>
                     </div>
+                    {transfusao == "SIM" && 
+                        <div className='row mt-3'>
+                            <div className='col-6'>
+                                <label className='form-label'>Data da Transfusão:</label>
+                            </div>
+                            <div className='col-6'>
+                                <input type="date" className='form-control' name='dataTransfusao' value={dataTransfusao}  onChange={(e) => setDataTransfusao(e.target.value)}/>
+                            </div>
+                        </div>
+                    }
+                </div>
+            )}
+            {steps[currentStep].id === 'more_medical_data' && (
+               <div className="fields">
+                    <h3 className='mb-4'>{steps[currentStep].title}</h3>
+                    <h5>Doenças</h5>
+                    <div className='d-flex justify-content-start'>
+                        <button className='btn' onClick={addInputButtonDoencas}><BsFillPlusCircleFill/></button>
+                    </div>
+                    {
+                        doencas.map((doenca,index) => (
+                        <div key={index} className='d-flex justify-content-center mt-3'>
+                            <input
+                                className='form-control w-70'
+                                type="text"
+                                id={`doenca-${index+1}`}
+                                placeholder={`Informe a Doença ${index+1}`}
+                                name="doença"
+                                onChange={(e) => handleChangeDoencas(e,index)}
+                                value={doenca}
+                            />
+                            <button className='btn' onClick={() =>{handleRemoveInputDoencas(index)}}><BsTrash/></button>
+                        </div>
+                        ))
+                    }
                 </div>
             )}
             {steps[currentStep].id === 'convenio_data' && (
@@ -264,9 +411,54 @@ const MedicalRecord = () => {
                     </div>
                 </div>
             )}
-            {steps[currentStep].id === 'register_end' && (
-                <div className="fields">
+            {steps[currentStep].id === 'medicamentos' && (
+               <div className="fields">
                     <h3 className='mb-4'>{steps[currentStep].title}</h3>
+                    <div className='d-flex justify-content-start'>
+                        <button className='btn btn-medicamentos' onClick={addInputButton}><BsFillPlusCircleFill/></button>
+                    </div>
+                    {
+                        medicamentos.map((medicamento,index) => (
+                        <div key={index} className='d-flex justify-content-center mt-3'>
+                            <input
+                                className='form-control w-70'
+                                type="text"
+                                id={`medicamento-${index+1}`}
+                                placeholder={`Informe o Medicamento ${index+1}`}
+                                name="medicamento"
+                                onChange={(e) => handleChangeMedicamento(e,index)}
+                                value={medicamento}
+                            />
+                            <button className='btn' onClick={() =>{handleRemoveInputMedicamentos(index)}}><BsTrash/></button>
+                        </div>
+                        ))
+                    }
+                </div>
+            )}
+             {steps[currentStep].id === 'submit' && (
+               <div className="fields">
+                    <h3 className='mb-4'>{steps[currentStep].title}</h3>
+                    <div className='d-flex justify-content-start'>
+                        <button className='btn' onClick={addInputButtonVacinas}><BsFillPlusCircleFill/></button>
+                    </div>
+                    {
+                        vacinas.map((vacina,index) => (
+                        <div key={index} className='d-flex justify-content-center mt-3'>
+                            <input
+                                className='form-control w-70'
+                                type="text"
+                                id={`vacina-${index+1}`}
+                                placeholder={`Nome da Vacina ${index+1}`}
+                                name="vacina"
+                                onChange={ (e) => setForm( { ...form,  nomeVacina: e.target.value } ) }
+                            />
+                            <input type="number" min="1" id={`vacina-${index+1}`} className='form-control' placeholder='Número de doses' onChange={ (e) => setForm( { ...form,  dosesVacina: e.target.value } ) } />
+                            <input type="date" id={`vacina-${index+1}`} className='form-control' onChange={ (e) => setForm( { ...form,  dataVacina: e.target.value } ) } />
+                            <button className='btn' onClick={() => {handleChangeVacinas(index)}}><BsFillCheckCircleFill/></button>
+                            <button className='btn' onClick={() =>{handleRemoveInputVacinas(index)}}><BsTrash/></button>
+                        </div>
+                        ))
+                    }
                 </div>
             )}
             <div className='row position-relative"'>

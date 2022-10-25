@@ -1,5 +1,11 @@
 import './Profile.css'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {
+    BsPlusCircleFill,
+    BsFillEyeFill,
+    BsFillPencilFill,
+    BsFillTrashFill
+} from "react-icons/bs";
 
 const Profile = () => {
     return (
@@ -25,10 +31,74 @@ const Profile = () => {
                 </TabList>
 
                 <TabPanel>
-                    <h2>Any content 1</h2>
+                <table className="table table-striped mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nome do Paciente</th>
+                                <th scope="col">Data da Consulta</th>
+                                <th scope="col">Hora da Consulta</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <th scope="row">1</th>
+                                <td>Edson Junior</td>
+                                <td>24/10/2022</td>
+                                <td>12:00:00</td>
+                                <td>Ativa</td>
+                                <td className='actions'>
+                                    <button className='btn me-3'>
+                                        <BsFillEyeFill/>
+                                    </button>
+                                    <button className='btn me-3'>
+                                        <BsFillPencilFill/>
+                                    </button>
+                                    <button className='btn'>
+                                        <BsFillTrashFill/>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </TabPanel>
                 <TabPanel>
-                    <h2>Any content 2</h2>
+                <table className="table table-striped mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nome do Paciente</th>
+                                <th scope="col">Data da Consulta</th>
+                                <th scope="col">Hora da Consulta</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Edson Junior</td>
+                                <td>24/10/2022</td>
+                                <td>12:00:00</td>
+                                <td>Ativa</td>
+                                <td className='actions'>
+                                    <button className='btn me-3'>
+                                        <BsFillEyeFill/>
+                                    </button>
+                                    <button className='btn me-3'>
+                                        <BsFillPencilFill/>
+                                    </button>
+                                    <button className='btn'>
+                                        <BsFillTrashFill/>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </TabPanel>
             </Tabs>
         </div>

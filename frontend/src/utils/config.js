@@ -1,4 +1,4 @@
-export const api = "http://localhost:8080";
+export const api = "https://fichamedicadigital.herokuapp.com";
 
 export const requestConfig = (method, data, token = null) => {
 
@@ -15,10 +15,8 @@ export const requestConfig = (method, data, token = null) => {
       method: method,
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization" : `Basic ${credentials}`,
-        "grant_type" : "password"
-      },
+        "Content-Type": "application/json",
+      }
     };
   }
 

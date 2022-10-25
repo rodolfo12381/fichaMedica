@@ -23,9 +23,11 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <div className={!auth && 'app'}>
             <BrowserRouter>
-                <Navbar />
+                {auth && (
+                    <Navbar />
+                )}
                 <div className="container">
                     <Routes>
                         <Route
@@ -62,7 +64,9 @@ function App() {
                         />
                     </Routes>
                 </div>
-                <Footer />
+                {auth && 
+                    <Footer />
+                }
             </BrowserRouter>
         </div>
     );

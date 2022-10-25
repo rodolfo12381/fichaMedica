@@ -24,7 +24,7 @@ const Register = () => {
         const user = {
             primeiroNome: name,
             sobreNome: surName,
-            birthdate: birthdate,
+            dataNascimento: birthdate,
             passwordConfirm: confirmPassword,
             password: password,
             email: email,

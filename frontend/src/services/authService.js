@@ -26,15 +26,14 @@ const login = async (data) => {
   const config = requestConfig("POST", data);
 
   try {
-    const res = await fetch(api + "/oauth/token", config)
+    const res = await fetch(api + "/usuarios/login", config)
       .then((res) => res.json())
       .catch((err) => err);
 
-    if (res) {
+      if (res.id) {
       localStorage.setItem("user", JSON.stringify(res));
+      return res;
     }
-    
-    return res;
   } catch (error) {
     console.log(error);
   }

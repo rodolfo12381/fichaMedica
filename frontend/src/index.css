@@ -18,4 +18,6 @@ body {
   ul {
     list-style: none;
   }
-  
+.noauth{
+  background: linear-gradient( 120deg, #800080, #551054, #2d102c );
+}

@@ -1,11 +1,11 @@
 import './Consultas.css'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {
-    BsPlusCircleFill,
     BsFillEyeFill,
     BsFillPencilFill,
     BsFillTrashFill
 } from "react-icons/bs";
+import Modal from './ConsultaModal';
 
 const Consultas = () => {
     return (
@@ -20,7 +20,7 @@ const Consultas = () => {
                 </TabList>
 
                 <TabPanel>
-                    <button className="btn">Agendar Nova Consulta <BsPlusCircleFill/></button>
+                    <Modal/>
                     <table className="table table-striped mt-4">
                         <thead>
                             <tr>
