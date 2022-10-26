@@ -58,8 +58,8 @@ const MedicalRecord = () => {
     const [email, setEmail] = useState('');
 
     const [cardiaco, setCardiaco] = useState('');
-    const [desmaioConvulsao, setDesmaioConvulsao] = useState('');
-    const [dataDesmaioConvulsao, setDataDesmaioConvulsao] = useState('');
+    var [desmaioConvulsao, setDesmaioConvulsao] = useState('');
+    const [dataDesmaioConvulsao, setDataDesmaioConvulsao] = useState('false');
     const [diabetico, setDiabetico] = useState('');
     const [medicamentos, setMedicamentos] = useState([]);
     const [vacinas, setVacinas] = useState([]);
@@ -73,6 +73,8 @@ const MedicalRecord = () => {
     const [cartaoSus, setCartaoSus] = useState('');
     const [numeroConvenio, setNumeroConvenio] = useState('');
     const [convenio, setConvenio] = useState('');
+    const [idPaciente,setIdPaciente] = useState(1)
+    const [medicamentosAlergia,setMedicamentosAlergia] = useState([])
 
     const dispatch = useDispatch();
 
@@ -135,6 +137,11 @@ const MedicalRecord = () => {
         }
 
         // dispatch(register(user));
+        if(desmaioConvulsao == 'true') {
+            desmaioConvulsao = true
+        } else if(desmaioConvulsao == 'false') {
+            desmaioConvulsao = false
+        }
 
         const medicalData = {
             cardiaco: cardiaco,
@@ -149,12 +156,15 @@ const MedicalRecord = () => {
             numeroCarteirinha: numeroConvenio,
             convenio: convenio,
             medicamentos: medicamentos,
+            medicamentosAlergia: ['teste'],
             doencas:doencas,
             tipoSanguineo: tipoSanguineo,
             internadoMotivo: internadoMotivo,
             dataDesmaioConvulsao:dataDesmaioConvulsao,
-            vacinas: vacinas
+            vacinas: vacinas,
+            idPaciente:idPaciente
         }
+        console.log(medicalData)
         dispatch(medicalRegister(medicalData));
         // navigate("/profile")
     }
@@ -258,13 +268,13 @@ const MedicalRecord = () => {
                         </div>
                         <div className='col-6'>
                             <select className="form-select" aria-label="Default select example" onChange={(e)=> setDesmaioConvulsao(e.target.value)} value={desmaioConvulsao}>
-                                <option value="">SELECIONE</option>
-                                <option value="DESMAIO">DESMAIO</option>
-                                <option value="CONVULSAO">CONVULSÃO</option>
+                                <option value='false'>SELECIONE</option>
+                                <option value='true'>DESMAIO</option>
+                                <option value='true'>CONVULSÃO</option>
                             </select>
                         </div>
                     </div>
-                    {desmaioConvulsao  && 
+                    {desmaioConvulsao == 'true'  && 
                         <div className='row mt-3'>
                             <div className='col-6'>
                                 <label className='form-label'>Data do Ocorrido:</label>

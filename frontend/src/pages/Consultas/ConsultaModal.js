@@ -49,6 +49,10 @@ const ConsultaModal = () => {
         setShow(true)
     }
 
+    useEffect(() => {
+        dispatch(reset());
+    }, [dispatch]);
+
     return (
         <>
             <Button variant="secondary" onClick={handleShow}>
