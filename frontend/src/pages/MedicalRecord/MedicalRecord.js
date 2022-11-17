@@ -1,7 +1,8 @@
 import './MedicalRecord.css'
 import { useState,useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { register, reset } from "../../slices/authSlice";
+import { userRegister,pacientesFindAll,userFindAll  } from "../../slices/userSlice";
+import { reset  } from "../../slices/authSlice";
 import { medicalRegister } from "../../slices/medicalSlice";
 import { useNavigate } from 'react-router-dom';
 import {BsFillPlusCircleFill,BsTrash,BsFillCheckCircleFill} from "react-icons/bs";
@@ -37,6 +38,11 @@ const MedicalRecord = () => {
             progress: "end"
         },
         {
+            id: 'medicamentosAlergia',
+            title: "Medicamentos Alergia",
+            progress: "end-final"
+        },
+        {
             id: 'submit',
             title: "Vacinas",
             progress: "submit"
@@ -46,6 +52,18 @@ const MedicalRecord = () => {
     const [currentStep, setCurrentStep] = useState(0);
 
     function handleNextStep() {
+
+        if(currentStep == 0) {
+            const user= {
+                primeiroNome: name,
+                sobreNome: surName,
+                dataNascimento: birthdate,
+                email: email,
+                password: email
+            }
+        dispatch(userRegister(user))
+       
+        }
         setCurrentStep((prevState) => prevState + 1);
     }
     function handlePrevStep() {
@@ -57,26 +75,32 @@ const MedicalRecord = () => {
     const [birthdate, setBirthdate] = useState('');
     const [email, setEmail] = useState('');
 
-    const [cardiaco, setCardiaco] = useState('');
+    var [cardiaco, setCardiaco] = useState('');
     var [desmaioConvulsao, setDesmaioConvulsao] = useState('');
     const [dataDesmaioConvulsao, setDataDesmaioConvulsao] = useState('false');
-    const [diabetico, setDiabetico] = useState('');
+    var [diabetico, setDiabetico] = useState('');
     const [medicamentos, setMedicamentos] = useState([]);
+    const [medicamentosAlergia, setMedicamentosAlergias] = useState([]);
     const [vacinas, setVacinas] = useState([]);
     const [doencas,setDoencas] = useState([])
     const [tipoSanguineo, setTipoSanguineo] = useState('');
-    const [internado, setInternado] = useState('');
+    var [internado, setInternado] = useState('');
     const [internadoMotivo, setInternadoMotivo] = useState('');
-    const [intoleranteLactose, setIntoleranteLactose] = useState('');
-    const [transfusao, setTransfusao] = useState('');
+    var [intoleranteLactose, setIntoleranteLactose] = useState('');
+    var [transfusao, setTransfusao] = useState('');
     const [dataTransfusao, setDataTransfusao] = useState('')
     const [cartaoSus, setCartaoSus] = useState('');
     const [numeroConvenio, setNumeroConvenio] = useState('');
     const [convenio, setConvenio] = useState('');
-    const [idPaciente,setIdPaciente] = useState(1)
-    const [medicamentosAlergia,setMedicamentosAlergia] = useState([])
 
     const dispatch = useDispatch();
+
+    const findLastId = () => {
+        if(usuarios != undefined){
+            let indiceArray = usuarios.content.length - 1
+            return usuarios.content[indiceArray].id
+        } 
+    }
 
     const addInputButton = (e) =>{
         e.preventDefault()
@@ -91,6 +115,21 @@ const MedicalRecord = () => {
 
     const handleRemoveInputMedicamentos = (position) =>{
         setMedicamentos([...medicamentos.filter((_,index) => index != position)])
+    }
+
+    const addInputButtonMedicamentosAlergia = (e) =>{
+        e.preventDefault()
+
+        setMedicamentosAlergias([...medicamentosAlergia,""])
+    }
+
+    const handleChangeMedicamentosAlergia = (e,index) => {
+            medicamentosAlergia[index] = e.target.value
+            setMedicamentosAlergias([...medicamentosAlergia])
+    }
+
+    const handleRemoveInputMedicamentosAlergia = (position) =>{
+        setMedicamentosAlergias([...medicamentosAlergia.filter((_,index) => index != position)])
     }
 
     const addInputButtonDoencas = (e) =>{
@@ -124,45 +163,72 @@ const MedicalRecord = () => {
         setVacinas([...vacinas.filter((_,index) => index != position)])
     }
 
+    useEffect(() => {
+        dispatch(userFindAll())
+    },[])
+    const usuarios = useSelector((state) => state.user.userData)
+
     const handleSubmit = (e) => {
 
         e.preventDefault()
-
-        const user= {
-            primeiroNome: name,
-            sobreNome: surName,
-            dataNascimento: birthdate,
-            email: email,
-            password: email
-        }
-
-        // dispatch(register(user));
+        
         if(desmaioConvulsao == 'true') {
             desmaioConvulsao = true
         } else if(desmaioConvulsao == 'false') {
             desmaioConvulsao = false
         }
+        if(cardiaco == 'true') {
+            cardiaco = true
+        } else if(cardiaco == 'false') {
+            cardiaco = false
+        }
+        if(diabetico == 'true') {
+            diabetico = true
+        } else if(diabetico == 'false') {
+            diabetico = false
+        }
+        if(internado == 'true') {
+            internado = true
+        } else if(internado == 'false') {
+            internado = false
+        }
+        if(intoleranteLactose == 'true') {
+            intoleranteLactose = true
+        } else if(intoleranteLactose == 'false') {
+            intoleranteLactose = false
+        }
+        if(transfusao == 'true') {
+            transfusao = true
+        } else if(transfusao == 'false') {
+            transfusao = false
+        }
+        let date = new Date()
 
+        for(var i = 0; i<3; i++) {
+            var idPaciente = findLastId()
+            console.log(idPaciente)
+        }
         const medicalData = {
             cardiaco: cardiaco,
             desmaioOuConvulsao: desmaioConvulsao,
-            dataDesmaioConvulsao: dataDesmaioConvulsao,
+            dataDesmaioConvulsao: date.toISOString(dataDesmaioConvulsao),
             diabetico: diabetico,
             internado: internado,
             intoleranciaLactose: intoleranteLactose,
             transfusao:transfusao,
-            dataTransfusao: dataTransfusao,
+            dataTransfusao: date.toISOString(dataTransfusao),
             cartaoSus: cartaoSus,
             numeroCarteirinha: numeroConvenio,
             convenio: convenio,
             medicamentos: medicamentos,
-            medicamentosAlergia: ['teste'],
+            medicamentosAlergia: medicamentosAlergia,
             doencas:doencas,
             tipoSanguineo: tipoSanguineo,
-            internadoMotivo: internadoMotivo,
-            dataDesmaioConvulsao:dataDesmaioConvulsao,
+            motivoInternado: internadoMotivo,
             vacinas: vacinas,
-            idPaciente:idPaciente
+            usuario: {
+                id: idPaciente
+            }
         }
         console.log(medicalData)
         dispatch(medicalRegister(medicalData));
@@ -237,9 +303,9 @@ const MedicalRecord = () => {
                         </div>
                         <div className='col-6'>
                             <select className="form-select " aria-label="Default select example" onChange={(e)=> setCardiaco(e.target.value)} value={cardiaco}>
-                                <option value="">SELECIONE</option>
-                                <option value="SIM">SIM</option>
-                                <option value="NAO">NÃO</option>
+                                <option value="false">SELECIONE</option>
+                                <option value="true">SIM</option>
+                                <option value="false">NÃO</option>
                             </select>
                         </div>
                     </div>
@@ -290,9 +356,9 @@ const MedicalRecord = () => {
                         </div>
                         <div className="col-6">
                             <select className="form-select" aria-label="Default select example" onChange={(e)=> setDiabetico(e.target.value)} value={diabetico}>
-                                <option value="">SELECIONE</option>
-                                <option value="SIM">SIM</option>
-                                <option value="NAO">NÃO</option>
+                                <option value="false">SELECIONE</option>
+                                <option value="true">SIM</option>
+                                <option value="false">NÃO</option>
                             </select>
                         </div>
                     </div>
@@ -302,13 +368,13 @@ const MedicalRecord = () => {
                         </div>
                         <div className="col-6">
                             <select className="form-select" aria-label="Default select example" onChange={(e)=> setInternado(e.target.value)} value={internado}>
-                                <option value="">SELECIONE</option>
-                                <option value="SIM">SIM</option>
-                                <option value="NAO">NÃO</option>
+                                <option value="false">SELECIONE</option>
+                                <option value="true">SIM</option>
+                                <option value="false">NÃO</option>
                             </select>
                         </div>
                     </div>
-                    {internado == 'SIM' &&
+                    {internado == 'true' &&
                         <div className='row mt-3'>
                             <div className="col-6">
                                 <label className='form-label'>Motivo:</label>
@@ -326,9 +392,9 @@ const MedicalRecord = () => {
                         </div>
                         <div className="col-6">
                             <select className="form-select" aria-label="Default select example" onChange={(e)=> setIntoleranteLactose(e.target.value)} value={intoleranteLactose}>
-                                <option value="">SELECIONE</option>
-                                <option value="SIM">SIM</option>
-                                <option value="NAO">NÃO</option>
+                                <option value="false">SELECIONE</option>
+                                <option value="true">SIM</option>
+                                <option value="false">NÃO</option>
                             </select>
                         </div>                    </div>
                     <div className='row mt-3'>
@@ -337,13 +403,13 @@ const MedicalRecord = () => {
                         </div>
                         <div className="col-6">
                             <select className="form-select" aria-label="Default select example" onChange={(e)=> setTransfusao(e.target.value)} value={transfusao}>
-                                <option value="">SELECIONE</option>
-                                <option value="SIM">SIM</option>
-                                <option value="NAO">NÃO</option>
+                                <option value="false">SELECIONE</option>
+                                <option value="true">SIM</option>
+                                <option value="false">NÃO</option>
                             </select>
                         </div>
                     </div>
-                    {transfusao == "SIM" && 
+                    {transfusao == "true" && 
                         <div className='row mt-3'>
                             <div className='col-6'>
                                 <label className='form-label'>Data da Transfusão:</label>
@@ -445,6 +511,30 @@ const MedicalRecord = () => {
                     }
                 </div>
             )}
+            {steps[currentStep].id === 'medicamentosAlergia' && (
+               <div className="fields">
+                    <h3 className='mb-4'>{steps[currentStep].title}</h3>
+                    <div className='d-flex justify-content-start'>
+                        <button className='btn btn-medicamentos' onClick={addInputButtonMedicamentosAlergia}><BsFillPlusCircleFill/></button>
+                    </div>
+                    {
+                        medicamentosAlergia.map((medicamentoAlergia,index) => (
+                        <div key={index} className='d-flex justify-content-center mt-3'>
+                            <input
+                                className='form-control w-70'
+                                type="text"
+                                id={`medicamentoAlergia-${index+1}`}
+                                placeholder={`Informe o Medicamento Alérgico${index+1}`}
+                                name="medicamentoAlérgico"
+                                onChange={(e) => handleChangeMedicamentosAlergia(e,index)}
+                                value={medicamentoAlergia}
+                            />
+                            <button className='btn' onClick={() =>{handleRemoveInputMedicamentosAlergia(index)}}><BsTrash/></button>
+                        </div>
+                        ))
+                    }
+                </div>
+            )}
              {steps[currentStep].id === 'submit' && (
                <div className="fields">
                     <h3 className='mb-4'>{steps[currentStep].title}</h3>
@@ -462,8 +552,8 @@ const MedicalRecord = () => {
                                 name="vacina"
                                 onChange={ (e) => setForm( { ...form,  nomeVacina: e.target.value } ) }
                             />
-                            <input type="number" min="1" id={`vacina-${index+1}`} className='form-control' placeholder='Número de doses' onChange={ (e) => setForm( { ...form,  dosesVacina: e.target.value } ) } />
-                            <input type="date" id={`vacina-${index+1}`} className='form-control' onChange={ (e) => setForm( { ...form,  dataVacina: e.target.value } ) } />
+                            <input type="number" min="1" id={`vacina-${index+1}`} className='form-control' placeholder='Número de doses' onChange={ (e) => setForm( { ...form,  numeroDoses: e.target.value } ) } />
+                            <input type="date" id={`vacina-${index+1}`} className='form-control' onChange={ (e) => setForm( { ...form,  diaVacina: e.target.value } ) } />
                             <button className='btn' onClick={() => {handleChangeVacinas(index)}}><BsFillCheckCircleFill/></button>
                             <button className='btn' onClick={() =>{handleRemoveInputVacinas(index)}}><BsTrash/></button>
                         </div>
